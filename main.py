@@ -19,16 +19,16 @@ if __name__ == '__main__':
     if len(user_name) == 0:
         user_name = 'User'
     bank = get_int('Your bank: ')
-    if bank == 0:
-        print("Sorry but we dont play in ")
+    if bank < 5:
+        print("Sorry but you cant play with less than 5$")
         exit(0)
     while True:
-        players_amount = get_int(f'Players num (max: {MAX_PLAYERS - 1}): ')
-        if players_amount <= MAX_PLAYERS - 1:
+        bots_amount = get_int(f'Players num (max: {MAX_PLAYERS - 1}): ')
+        if bots_amount <= MAX_PLAYERS - 1:
             break
         else:
             print('Invalid input')
     print('-' * 60)
 
-    game = Game(user_name, bank, players_amount)
-
+    game = Game(user_name, bank)
+    game.start_game(bots_amount)
