@@ -27,7 +27,8 @@ class Game:
         # getting first 2 cards for each player
         for player in self.players:
             for _ in range(2):
-                self.player.get_cards()
+                card = self.deck.get_card()
+                self.player.take_card(card)
 
 
 
