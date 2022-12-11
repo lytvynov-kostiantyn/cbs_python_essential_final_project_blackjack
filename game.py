@@ -28,7 +28,12 @@ class Game:
         for player in self.players:
             for _ in range(2):
                 card = self.deck.get_card()
-                self.player.take_card(card)
+                player.take_card(card)
+
+        # printing all cards and points for each player
+        for player in self.players:
+            print(player.points)
+            print(player.cards)
 
 
 
