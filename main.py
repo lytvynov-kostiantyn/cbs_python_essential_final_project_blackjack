@@ -1,16 +1,6 @@
 from game import Game
 
-MAX_PLAYERS = 7
-
-
-def get_int(phrase='Input: '):
-    while True:
-        try:
-            num = int(input(f'{phrase}'))
-        except ValueError:
-            print('Invalid input')
-        else:
-            return num if num >= 0 else print('Invalid input')
+from const import MAX_PLAYERS, get_int
 
 
 if __name__ == '__main__':

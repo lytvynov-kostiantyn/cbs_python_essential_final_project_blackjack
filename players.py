@@ -1,5 +1,6 @@
+import random
 from abc import abstractmethod, ABC
-from cards import *
+from const import get_int
 
 
 class AbstractPlayer(ABC):
@@ -16,13 +17,39 @@ class AbstractPlayer(ABC):
     def _update_points(self, card):
         self.points += card.points
 
+    @abstractmethod
+    def make_bet(self):
+        pass
+
 
 class Player(AbstractPlayer):
-    pass
+    def make_bet(self):
+        while True:
+            user_bet = get_int('Make your bet: ')
+            if user_bet < self.bank:
+                self.bank -= user_bet
+                return user_bet
+            else:
+                print('The bet can`t exceed the size of your bank')
+
+    def __str__(self):
+        return f'Player "{self.name}"'
 
 
 class Bot(AbstractPlayer):
-    pass
+    def make_bet(self):
+        bet = random.randint(1, self.bank)
+        self.bank -= bet
+        return bet
 
     def __str__(self):
-        return f'Bot "{self.name}" with {self.bank} bank is created'
+        return f'Bot "{self.name}"'
+
+
+class Dealer(AbstractPlayer):
+    def make_bet(self):
+        raise Exception('This type is dealer so it has no bets')
+
+    def __str__(self):
+        return 'Dealer'
+

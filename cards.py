@@ -1,8 +1,7 @@
 from itertools import product
 from random import shuffle
 
-SUITS = ['Heart', 'Diamond', 'Club', 'Spade']
-RANKS = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
+from const import SUITS, RANKS
 
 
 class Card:
@@ -12,7 +11,7 @@ class Card:
         self.points = points
 
     def __str__(self):
-        return f'Card: {self.rank}/{self.suit} (points: {self.points})'
+        return f'{self.rank}/{self.suit} (points: {self.points})'
 
     def __repr__(self):
         return f'{self.rank}/{self.suit}/{self.points}'
