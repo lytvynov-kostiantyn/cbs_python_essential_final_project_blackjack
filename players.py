@@ -1,6 +1,6 @@
 import random
 from abc import abstractmethod, ABC
-from const import get_int
+from const import get_int, user_choice
 
 
 class AbstractPlayer(ABC):
@@ -27,6 +27,10 @@ class AbstractPlayer(ABC):
         self.cards = []
         self.bet = None
 
+    @abstractmethod
+    def ask_cards(self):
+        pass
+
 
 class Player(AbstractPlayer):
     def make_bet(self):
@@ -39,15 +43,33 @@ class Player(AbstractPlayer):
             else:
                 print('The bet can`t exceed the size of your bank')
 
+    def ask_cards(self):
+        if self.points > 21:
+            return False
+        else:
+            player_choice = user_choice('Do you need card(y/n): ')
+            boo = True if player_choice == 'y' else False
+            return boo
+
     def __str__(self):
         return f'Player "{self.name}"'
 
 
 class Bot(AbstractPlayer):
+    def __init__(self, name, bank):
+        super().__init__(name, bank)
+        self.bot_level = random.randint(17, 20)
+
     def make_bet(self):
         bet = random.randint(1, self.bank)
         self.bank -= bet
         self.bet = bet
+
+    def ask_cards(self):
+        if self.points < self.bot_level:
+            return True
+        else:
+            return False
 
     def __str__(self):
         return f'Bot "{self.name}"'
@@ -56,6 +78,9 @@ class Bot(AbstractPlayer):
 class Dealer(AbstractPlayer):
     def make_bet(self):
         raise Exception('This type is dealer so it has no bets')
+
+    def ask_cards(self):
+        pass
 
     def __str__(self):
         return 'Dealer'

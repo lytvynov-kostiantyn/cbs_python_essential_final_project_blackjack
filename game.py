@@ -27,14 +27,10 @@ class Game:
             player.make_bet()
             print(f'{player} bets: {player.bet}$')
 
-    def print_cards_points(self):
-        for player in self.players:
-            print(f'{player} has {player.points} points')
-            print('His cards: {}'.format(', '.join(map(str, player.cards))))
-
-    def print_dealer_cards_points(self):
-        print(f'{self.dealer} has {self.dealer.points} points')
-        print('His cards: {}'.format(', '.join(map(str, self.dealer.cards))))
+    @staticmethod
+    def print_cards_points(player):
+        print(f'{player} has {player.points} points')
+        print('His cards: {}'.format(', '.join(map(str, player.cards))))
 
     # getting first cards for each player
     def get_card(self, player):
@@ -66,6 +62,13 @@ class Game:
         else:
             pass
 
+    def add_cards(self, player):
+        while player.ask_cards():
+            sleep(2)
+            self.get_card(player)
+            self.print_cards_points(player)
+        print('-' * 60)
+
     def start_game(self, bots_amount):
         # Adding players to the game
         self._add_bots(bots_amount, self.player.bank)
@@ -88,12 +91,23 @@ class Game:
         self.get_card(self.dealer)
 
         # printing all cards and points for each player
-        self.print_cards_points()
+        for player in self.players:
+            self.print_cards_points(player)
         print('-' * 60)
 
         # printing all cards and points for dealer
-        self.print_dealer_cards_points()
+        self.print_cards_points(self.dealer)
         print('-' * 60)
 
         # checking players points
         self.checking_points()
+
+        for player in self.players:
+            if player.bet != 0 or player.points != 21:
+                self.add_cards(player)
+
+        # printing all cards and points for each player
+        for player in self.players:
+            self.print_cards_points(player)
+        print('-' * 60)
+
