@@ -49,6 +49,7 @@ class Game:
                     if self.dealer.points < 10:
                         player.bank += player.bet * 2.5
                         print(f'{player} get 1.5 x bet to his bank!')
+                        player.end_round()
                     else:
                         if isinstance(player, Bot):
                             player_choice = random.choice(['y', 'n'])
@@ -61,6 +62,7 @@ class Game:
                             case 'n':
                                 player.bank += player.bet * 2
                                 print(f'{player} gets 1xbet to his bank!')
+                                player.end_round()
         else:
             pass
 

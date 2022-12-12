@@ -22,6 +22,11 @@ class AbstractPlayer(ABC):
     def make_bet(self):
         pass
 
+    def end_round(self):
+        self.points = 0
+        self.cards = []
+        self.bet = None
+
 
 class Player(AbstractPlayer):
     def make_bet(self):
