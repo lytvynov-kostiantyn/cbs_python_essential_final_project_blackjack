@@ -4,7 +4,7 @@ from const import MAX_PLAYERS, get_int
 
 
 if __name__ == '__main__':
-    print('Welcome to cbs blackjack!'.center(90, '_'))
+    print('Welcome to cbs blackjack!'.center(90, '-'))
     '''
     user_name = input('Your name: ')
     if len(user_name) == 0:

@@ -38,7 +38,7 @@ class Game:
         player.take_card(card)
 
     def first_round_check(self, players_in_game):
-        boo = players_in_game
+        boo = [i for i in players_in_game]
         for player in players_in_game:
             if player.points == 21:
                 print(f'{player} has blackjack!')
@@ -66,7 +66,7 @@ class Game:
 
     @staticmethod
     def second_round_check(players_in_game):
-        boo = players_in_game
+        boo = [i for i in players_in_game]
         for player in players_in_game:
             if player.points > 21:
                 print(f'{player} lose his bet!')
@@ -114,11 +114,12 @@ class Game:
             players_in_game = [i for i in self.players]
 
             # Players making bets
+            print('Players bets:'.center(90, ' '))
             self.ask_bet()
             print('-' * 90)
 
             # getting first 2 cards for each player
-            sleep(3)
+            sleep(2)
             for player in players_in_game:
                 for _ in range(2):
                     self.get_card(player)
@@ -127,6 +128,7 @@ class Game:
             self.get_card(self.dealer)
 
             # printing all cards and points for each player
+            sleep(2)
             print('First leg:'.center(90, ' '))
             for player in players_in_game:
                 self.print_cards_points(player)
@@ -157,6 +159,7 @@ class Game:
             print('-' * 90)
 
             # printing all cards and points for each player
+            sleep(3)
             print('Second leg:'.center(90, ' '))
             for player in players_in_game:
                 self.print_cards_points(player)
@@ -167,10 +170,13 @@ class Game:
             print('-' * 90)
 
             # Getting results of the game
+            sleep(2)
+            print('Final results:'.center(90, ' '))
             self.get_result(players_in_game)
             print('-' * 90)
 
             # Rounding and printing players bank
+            sleep(2)
             print('Players bank after the game:'.center(90, ' '))
             for player in self.players:
                 player.bank = ceil(player.bank)
@@ -182,6 +188,7 @@ class Game:
                 exit(0)
             else:
                 choice = user_choice('Want to play again?(y/n): ')
+                print('-' * 90)
                 if choice == 'n':
                     print('We hope you like to play with us:)')
                     break
