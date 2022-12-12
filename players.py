@@ -9,6 +9,7 @@ class AbstractPlayer(ABC):
         self.bank = bank
         self.points = 0
         self.cards = []
+        self.bet = None
 
     def take_card(self, card):
         self.cards.append(card)
@@ -28,7 +29,8 @@ class Player(AbstractPlayer):
             user_bet = get_int('Make your bet: ')
             if user_bet < self.bank:
                 self.bank -= user_bet
-                return user_bet
+                self.bet = user_bet
+                break
             else:
                 print('The bet can`t exceed the size of your bank')
 
@@ -40,7 +42,7 @@ class Bot(AbstractPlayer):
     def make_bet(self):
         bet = random.randint(1, self.bank)
         self.bank -= bet
-        return bet
+        self.bet = bet
 
     def __str__(self):
         return f'Bot "{self.name}"'

@@ -14,3 +14,12 @@ def get_int(phrase='Input: '):
             print('Invalid input')
         else:
             return num if num >= 0 else print('Invalid input')
+
+
+def user_choice(phrase='Input: '):
+    while True:
+        user_input = input(f'{phrase}').lower()
+        if user_input in ['y', 'n']:
+            return user_input
+        else:
+            print('Invalid input')

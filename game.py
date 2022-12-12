@@ -4,14 +4,14 @@ from players import *
 from cards import *
 
 from random import shuffle
-from const import BOT_NAMES
+from const import BOT_NAMES, user_choice
 
 
 class Game:
     def __init__(self, user_name, bank):
         self.deck = Deck()
         self.player = Player(user_name, bank)
-        self.dealer = Dealer(None, bank * 10)
+        self.dealer = Dealer(None, bank * 5)
         self.players = []
         self.min_bet, self.max_bet = 1, bank
 
@@ -24,7 +24,8 @@ class Game:
 
     def ask_bet(self):
         for player in self.players:
-            print(f'{player} bets: {player.make_bet()}$')
+            player.make_bet()
+            print(f'{player} bets: {player.bet}$')
 
     def print_cards_points(self):
         for player in self.players:
@@ -34,6 +35,34 @@ class Game:
     def print_dealer_cards_points(self):
         print(f'{self.dealer} has {self.dealer.points} points')
         print('His cards: {}'.format(', '.join(map(str, self.dealer.cards))))
+
+    # getting first cards for each player
+    def get_card(self, player):
+        card = self.deck.get_card()
+        player.take_card(card)
+
+    def checking_points(self):
+        if len(self.dealer.cards) == 1:
+            for player in self.players:
+                if player.points == 21:
+                    print(f'{player} has blackjack!')
+                    if self.dealer.points < 10:
+                        player.bank += player.bet * 2.5
+                        print(f'{player} get 1.5 x bet to his bank!')
+                    else:
+                        if isinstance(player, Bot):
+                            player_choice = random.choice(['y', 'n'])
+                        else:
+                            print('You can take your prize(1xbet) now or wait dealer second card and win 1.5xbet')
+                            player_choice = user_choice('Want to continue("y"/"n"): ')
+                        match player_choice:
+                            case 'y':
+                                print(f'{player} decide to wait dealers second card!')
+                            case 'n':
+                                player.bank += player.bet * 2
+                                print(f'{player} gets 1xbet to his bank!')
+        else:
+            pass
 
     def start_game(self, bots_amount):
         # Adding players to the game
@@ -51,12 +80,10 @@ class Game:
         sleep(3)
         for player in self.players:
             for _ in range(2):
-                card = self.deck.get_card()
-                player.take_card(card)
+                self.get_card(player)
 
         # getting 1 card for dealer
-        dealer_card = self.deck.get_card()
-        self.dealer.take_card(dealer_card)
+        self.get_card(self.dealer)
 
         # printing all cards and points for each player
         self.print_cards_points()
@@ -66,3 +93,5 @@ class Game:
         self.print_dealer_cards_points()
         print('-' * 60)
 
+        # checking players points
+        self.checking_points()
