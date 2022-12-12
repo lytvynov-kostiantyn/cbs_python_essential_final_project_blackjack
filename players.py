@@ -80,7 +80,10 @@ class Dealer(AbstractPlayer):
         raise Exception('This type is dealer so it has no bets')
 
     def ask_cards(self):
-        pass
+        if self.points < 17:
+            return True
+        else:
+            return False
 
     def __str__(self):
         return 'Dealer'

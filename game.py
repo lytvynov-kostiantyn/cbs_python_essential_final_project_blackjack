@@ -16,9 +16,8 @@ class Game:
         self.min_bet, self.max_bet = 1, bank
 
     def _add_bots(self, bots_amount, bank):
-        for _ in range(bots_amount):
-            name = random.choice(BOT_NAMES)
-            bot = Bot(name, random.randint(5, bank))
+        for i in range(bots_amount):
+            bot = Bot(BOT_NAMES[i], random.randint(5, bank))
             print(f'{bot} with {bot.bank}$ bank is created')
             self.players.append(bot)
 
@@ -37,30 +36,35 @@ class Game:
         card = self.deck.get_card()
         player.take_card(card)
 
-    def checking_points(self):
-        if len(self.dealer.cards) == 1:
-            for player in self.players:
-                if player.points == 21:
-                    print(f'{player} has blackjack!')
-                    if self.dealer.points < 10:
-                        player.bank += player.bet * 2.5
-                        print(f'{player} get 1.5 x bet to his bank!')
-                        player.end_round()
+    def checking_points(self, players_in_game):
+        for player in players_in_game:
+            if player.points == 21:
+                print(f'{player} has blackjack!')
+                if self.dealer.points < 10:
+                    player.bank += player.bet * 2.5
+                    print(f'{player} get 1.5 x bet to his bank!')
+                    player.end_round()
+                    players_in_game.remove(player)
+                else:
+                    if isinstance(player, Bot):
+                        player_choice = random.choice(['y', 'n'])
                     else:
-                        if isinstance(player, Bot):
-                            player_choice = random.choice(['y', 'n'])
-                        else:
-                            print('You can take your prize(1xbet) now or wait dealer second card and win 1.5xbet')
-                            player_choice = user_choice('Want to continue("y"/"n"): ')
-                        match player_choice:
-                            case 'y':
-                                print(f'{player} decide to wait dealers second card!')
-                            case 'n':
-                                player.bank += player.bet * 2
-                                print(f'{player} gets 1xbet to his bank!')
-                                player.end_round()
-        else:
-            pass
+                        print('You can take your prize(1xbet) now or wait dealer second card and win 1.5xbet')
+                        player_choice = user_choice('Want to continue("y"/"n"): ')
+                    match player_choice:
+                        case 'y':
+                            print(f'{player} decide to wait dealers second card!')
+                        case 'n':
+                            player.bank += player.bet * 2
+                            print(f'{player} gets 1xbet to his bank!')
+                            player.end_round()
+                            players_in_game.remove(player)
+            if player.points > 21:
+                print(f'{player} lose his bet!')
+                print('-' * 60)
+                player.end_round()
+                players_in_game.remove(player)
+        return players_in_game
 
     def add_cards(self, player):
         while player.ask_cards():
@@ -77,37 +81,55 @@ class Game:
         self.players.append(self.player)
         shuffle(self.players)
 
-        # Players making bets
-        self.ask_bet()
-        print('-' * 60)
+        while True:
+            # list with players that still in game
+            players_in_game = self.players
 
-        # getting first 2 cards for each player
-        sleep(3)
-        for player in self.players:
-            for _ in range(2):
-                self.get_card(player)
+            # Players making bets
+            self.ask_bet()
+            print('-' * 60)
 
-        # getting 1 card for dealer
-        self.get_card(self.dealer)
+            # getting first 2 cards for each player
+            sleep(3)
+            for player in players_in_game:
+                for _ in range(2):
+                    self.get_card(player)
 
-        # printing all cards and points for each player
-        for player in self.players:
-            self.print_cards_points(player)
-        print('-' * 60)
+            # getting 1 card for dealer
+            self.get_card(self.dealer)
 
-        # printing all cards and points for dealer
-        self.print_cards_points(self.dealer)
-        print('-' * 60)
+            # printing all cards and points for each player
+            for player in players_in_game:
+                self.print_cards_points(player)
+            print('-' * 60)
 
-        # checking players points
-        self.checking_points()
+            # printing all cards and points for dealer
+            self.print_cards_points(self.dealer)
+            print('-' * 60)
 
-        for player in self.players:
-            if player.bet != 0 or player.points != 21:
+            # checking players points
+            players_in_game = self.checking_points(players_in_game)
+
+            print('Players take cards.'.center(60, ' '))
+
+            # adding cards to players
+            for player in players_in_game:
                 self.add_cards(player)
 
-        # printing all cards and points for each player
-        for player in self.players:
-            self.print_cards_points(player)
-        print('-' * 60)
+            # checking players points
+            players_in_game = self.checking_points(players_in_game)
 
+            print('Dealer take cards.'.center(60, ' '))
+
+            # adding cards to dealer
+            self.add_cards(self.dealer)
+
+            # printing all cards and points for each player
+            for player in players_in_game:
+                self.print_cards_points(player)
+            print('-' * 60)
+
+            # printing all cards and points for dealer
+            self.print_cards_points(self.dealer)
+            print('-' * 60)
+            break
