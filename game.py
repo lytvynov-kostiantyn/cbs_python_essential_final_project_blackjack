@@ -151,29 +151,30 @@ class Game:
             # checking players points
             players_in_game = self.second_round_check(players_in_game)
 
-            print('-' * 90)
-            print('Dealer takes the cards:'.center(90, ' '))
+            if len(players_in_game) != 0:
+                print('-' * 90)
+                print('Dealer takes the cards:'.center(90, ' '))
 
-            # adding cards to dealer
-            self.add_cards(self.dealer)
-            print('-' * 90)
+                # adding cards to dealer
+                self.add_cards(self.dealer)
+                print('-' * 90)
 
-            # printing all cards and points for each player
-            sleep(3)
-            print('Second leg:'.center(90, ' '))
-            for player in players_in_game:
-                self.print_cards_points(player)
-            print('-' * 90)
+                # printing all cards and points for each player
+                sleep(3)
+                print('Second leg:'.center(90, ' '))
+                for player in players_in_game:
+                    self.print_cards_points(player)
+                print('-' * 90)
 
-            # printing all cards and points for dealer
-            self.print_cards_points(self.dealer)
-            print('-' * 90)
+                # printing all cards and points for dealer
+                self.print_cards_points(self.dealer)
+                print('-' * 90)
 
-            # Getting results of the game
-            sleep(2)
-            print('Final results:'.center(90, ' '))
-            self.get_result(players_in_game)
-            print('-' * 90)
+                # Getting results of the game
+                sleep(2)
+                print('Final results:'.center(90, ' '))
+                self.get_result(players_in_game)
+                print('-' * 90)
 
             # Rounding and printing players bank
             sleep(2)

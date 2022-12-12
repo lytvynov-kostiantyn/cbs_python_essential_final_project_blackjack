@@ -36,7 +36,7 @@ class Player(AbstractPlayer):
     def make_bet(self):
         while True:
             user_bet = get_int('Make your bet: ')
-            if user_bet < self.bank:
+            if user_bet <= self.bank:
                 self.bank -= user_bet
                 self.bet = user_bet
                 break
