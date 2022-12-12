@@ -5,13 +5,14 @@ from cards import *
 
 from random import shuffle
 from const import BOT_NAMES, user_choice
+from math import ceil
 
 
 class Game:
     def __init__(self, user_name, bank):
         self.deck = Deck()
         self.player = Player(user_name, bank)
-        self.dealer = Dealer(None, bank * 5)
+        self.dealer = Dealer(None, None)
         self.players = []
         self.min_bet, self.max_bet = 1, bank
 
@@ -36,58 +37,85 @@ class Game:
         card = self.deck.get_card()
         player.take_card(card)
 
-    def checking_points(self, players_in_game):
+    def first_round_check(self, players_in_game):
+        boo = players_in_game
         for player in players_in_game:
             if player.points == 21:
                 print(f'{player} has blackjack!')
                 if self.dealer.points < 10:
                     player.bank += player.bet * 2.5
-                    print(f'{player} get 1.5 x bet to his bank!')
-                    player.end_round()
-                    players_in_game.remove(player)
+                    print(f'{player} get 1.5xbet to his bank!')
+                    print('-' * 90)
+                    boo.remove(player)
                 else:
                     if isinstance(player, Bot):
                         player_choice = random.choice(['y', 'n'])
                     else:
                         print('You can take your prize(1xbet) now or wait dealer second card and win 1.5xbet')
-                        player_choice = user_choice('Want to continue("y"/"n"): ')
+                        player_choice = user_choice('Want to continue?(y/n): ')
                     match player_choice:
                         case 'y':
                             print(f'{player} decide to wait dealers second card!')
+                            print('-' * 90)
                         case 'n':
                             player.bank += player.bet * 2
                             print(f'{player} gets 1xbet to his bank!')
-                            player.end_round()
-                            players_in_game.remove(player)
+                            print('-' * 90)
+                            boo.remove(player)
+        return boo
+
+    @staticmethod
+    def second_round_check(players_in_game):
+        boo = players_in_game
+        for player in players_in_game:
             if player.points > 21:
                 print(f'{player} lose his bet!')
-                print('-' * 60)
-                player.end_round()
-                players_in_game.remove(player)
-        return players_in_game
+                boo.remove(player)
+        return boo
 
     def add_cards(self, player):
         while player.ask_cards():
             sleep(2)
             self.get_card(player)
             self.print_cards_points(player)
-            print('-' * 60)
+
+    def get_result(self, players_in_game):
+        if self.dealer.points > 21:
+            for player in players_in_game:
+                player.bank += player.bet * 2.5
+                print(f'{player} win and get 1.5xbet to his bank!')
+        else:
+            for player in players_in_game:
+                if player.points > self.dealer.points:
+                    player.bank += player.bet * 2.5
+                    print(f'{player} win and get 1.5xbet to his bank!')
+                elif player.points < self.dealer.points:
+                    print(f'{player} lose his bet!')
+                else:
+                    player.bank += player.bet
+                    print(f'{player} get his bet back!')
+
+    @staticmethod
+    def restart(player):
+        player.points = 0
+        player.cards = []
+        player.bet = None
 
     def start_game(self, bots_amount):
         # Adding players to the game
         self._add_bots(bots_amount, self.player.bank)
-        print('-' * 60)
+        print('-' * 90)
 
         self.players.append(self.player)
         shuffle(self.players)
 
         while True:
             # list with players that still in game
-            players_in_game = self.players
+            players_in_game = [i for i in self.players]
 
             # Players making bets
             self.ask_bet()
-            print('-' * 60)
+            print('-' * 90)
 
             # getting first 2 cards for each player
             sleep(3)
@@ -99,37 +127,69 @@ class Game:
             self.get_card(self.dealer)
 
             # printing all cards and points for each player
+            print('First leg:'.center(90, ' '))
             for player in players_in_game:
                 self.print_cards_points(player)
-            print('-' * 60)
+            print('-' * 90)
 
             # printing all cards and points for dealer
             self.print_cards_points(self.dealer)
-            print('-' * 60)
+            print('-' * 90)
 
             # checking players points
-            players_in_game = self.checking_points(players_in_game)
+            players_in_game = self.first_round_check(players_in_game)
 
-            print('Players take cards.'.center(60, ' '))
+            print('Players takes the cards:'.center(90, ' '))
 
             # adding cards to players
             for player in players_in_game:
                 self.add_cards(player)
+            print('-' * 90)
 
             # checking players points
-            players_in_game = self.checking_points(players_in_game)
+            players_in_game = self.second_round_check(players_in_game)
 
-            print('Dealer take cards.'.center(60, ' '))
+            print('-' * 90)
+            print('Dealer takes the cards:'.center(90, ' '))
 
             # adding cards to dealer
             self.add_cards(self.dealer)
+            print('-' * 90)
 
             # printing all cards and points for each player
+            print('Second leg:'.center(90, ' '))
             for player in players_in_game:
                 self.print_cards_points(player)
-            print('-' * 60)
+            print('-' * 90)
 
             # printing all cards and points for dealer
             self.print_cards_points(self.dealer)
-            print('-' * 60)
-            break
+            print('-' * 90)
+
+            # Getting results of the game
+            self.get_result(players_in_game)
+            print('-' * 90)
+
+            # Rounding and printing players bank
+            print('Players bank after the game:'.center(90, ' '))
+            for player in self.players:
+                player.bank = ceil(player.bank)
+                print(f'{player} has {player.bank}$')
+            print('-' * 90)
+
+            if self.player.bank == 0:
+                print('Sorry but you lose all your money:(')
+                exit(0)
+            else:
+                choice = user_choice('Want to play again?(y/n): ')
+                if choice == 'n':
+                    print('We hope you like to play with us:)')
+                    break
+                else:
+                    # Deleting players with empty bank
+                    self.players = [i for i in self.players if i.bank != 0]
+
+                    # Clear story of last game
+                    for player in self.players:
+                        self.restart(player)
+                    self.restart(self.dealer)

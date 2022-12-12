@@ -26,7 +26,7 @@ class Deck:
     def _generate_deck():
         cards = []
         for suit, rank in product(SUITS, RANKS):
-            if rank == 'ace':
+            if rank == 'A':
                 points = 11
             elif rank.isdigit():
                 points = int(rank)

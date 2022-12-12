@@ -47,7 +47,7 @@ class Player(AbstractPlayer):
         if self.points > 21:
             return False
         else:
-            player_choice = user_choice('Do you need card(y/n): ')
+            player_choice = user_choice('Do you need card?(y/n): ')
             boo = True if player_choice == 'y' else False
             return boo
 
@@ -87,4 +87,3 @@ class Dealer(AbstractPlayer):
 
     def __str__(self):
         return 'Dealer'
-

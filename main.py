@@ -4,7 +4,8 @@ from const import MAX_PLAYERS, get_int
 
 
 if __name__ == '__main__':
-    print('Welcome to cbs blackjack!'.center(60, '_'))
+    print('Welcome to cbs blackjack!'.center(90, '_'))
+    '''
     user_name = input('Your name: ')
     if len(user_name) == 0:
         user_name = 'User'
@@ -18,7 +19,12 @@ if __name__ == '__main__':
             break
         else:
             print('Invalid input')
-    print('-' * 60)
+    '''
+    print('-' * 90)
+
+    user_name = 'test'
+    bank = 20
+    bots_amount = 3
 
     game = Game(user_name, bank)
     game.start_game(bots_amount)
