@@ -67,7 +67,7 @@ class Game:
             sleep(2)
             self.get_card(player)
             self.print_cards_points(player)
-        print('-' * 60)
+            print('-' * 60)
 
     def start_game(self, bots_amount):
         # Adding players to the game
