@@ -13,10 +13,16 @@ class AbstractPlayer(ABC):
 
     def take_card(self, card):
         self.cards.append(card)
-        self._update_points(card)
+        self._update_points()
 
-    def _update_points(self, card):
-        self.points += card.points
+    def _update_points(self):
+        self.points = sum([card.points for card in self.cards])
+        if self.points > 21:
+            if 'A' in [card.rank for card in self.cards]:
+                for card in self.cards:
+                    if card.rank == 'A':
+                        card.points = 1
+                self._update_points()
 
     @abstractmethod
     def make_bet(self):
@@ -44,12 +50,11 @@ class Player(AbstractPlayer):
                 print('The bet can`t exceed the size of your bank')
 
     def ask_cards(self):
-        if self.points > 21:
+        if self.points >= 21:
             return False
-        else:
-            player_choice = user_choice('Do you need card?(y/n): ')
-            boo = True if player_choice == 'y' else False
-            return boo
+        player_choice = user_choice('Do you need card?(y/n): ')
+        boo = True if player_choice == 'y' else False
+        return boo
 
     def __str__(self):
         return f'Player "{self.name}"'
