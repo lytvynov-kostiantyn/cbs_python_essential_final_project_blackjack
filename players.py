@@ -1,6 +1,5 @@
 import random
 from abc import abstractmethod, ABC
-from const import get_int, user_choice
 
 
 class AbstractPlayer(ABC):
@@ -22,7 +21,7 @@ class AbstractPlayer(ABC):
                 for card in self.cards:
                     if card.rank == 'A':
                         card.points = 1
-                self._update_points()
+                self.points = sum([card.points for card in self.cards])
 
     @abstractmethod
     def make_bet(self):
@@ -37,11 +36,30 @@ class AbstractPlayer(ABC):
     def ask_cards(self):
         pass
 
+    @staticmethod
+    def _get_int(phrase='Input: '):
+        while True:
+            try:
+                num = int(input(f'{phrase}'))
+            except ValueError:
+                print('Invalid input')
+            else:
+                return num if num >= 0 else print('Invalid input')
+
+    @staticmethod
+    def _user_choice(phrase='Input: '):
+        while True:
+            user_input = input(f'{phrase}').lower()
+            if user_input in ['y', 'n']:
+                return user_input
+            else:
+                print('Invalid input')
+
 
 class Player(AbstractPlayer):
     def make_bet(self):
         while True:
-            user_bet = get_int('Make your bet: ')
+            user_bet = self._get_int('Make your bet: ')
             if user_bet <= self.bank:
                 self.bank -= user_bet
                 self.bet = user_bet
@@ -52,7 +70,7 @@ class Player(AbstractPlayer):
     def ask_cards(self):
         if self.points >= 21:
             return False
-        player_choice = user_choice('Do you need card?(y/n): ')
+        player_choice = self._user_choice('Do you need card?(y/n): ')
         boo = True if player_choice == 'y' else False
         return boo
 

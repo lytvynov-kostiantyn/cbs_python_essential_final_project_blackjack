@@ -1,9 +1,9 @@
-MAX_PLAYERS = 7
+MAX_PLAYERS = 5
 
 SUITS = ['Heart', 'Diamond', 'Club', 'Spade']
 RANKS = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
 
-BOT_NAMES = ['Jon', 'Tom', 'Bob', 'Anna', 'May', 'Ron']
+BOT_NAMES = ['Jon', 'Bob', 'Anna', 'May']
 
 
 def get_int(phrase='Input: '):
