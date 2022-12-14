@@ -25,12 +25,12 @@
 
 ---
 ### Under the hood:
-`main.py` - the file that launches the game process with user-defined parameters.
+`main.py` - the file that launches the game process.
 
-`const.py` - small game database with constant values and frequently used functions.
+`const.py` - small game database with constant values.
 
 `cards.py` - the file describes the class of a card and the class of a deck of cards.
 
 `players.py` - the file describes the classes of player, bot, and dealer.
 
-`game.py` - the file contains the class that describes the game process.
+`game.py` - the file contains the class with the game process.
