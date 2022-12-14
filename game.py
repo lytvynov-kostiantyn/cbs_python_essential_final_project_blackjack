@@ -4,17 +4,17 @@ from players import *
 from cards import *
 
 from random import shuffle
-from const import BOT_NAMES
+from const import BOT_NAMES, MAX_PLAYERS
 from math import ceil
 
 
 class Game:
-    def __init__(self, user_name, bank):
+    def __init__(self):
         self.deck = Deck()
-        self.player = Player(user_name, bank)
+        self.player = None
         self.dealer = Dealer(None, None)
         self.players = []
-        self.min_bet, self.max_bet = 1, bank
+        self.min_bet, self.max_bet = 1, None
 
     def _add_bots(self, bots_amount, bank):
         for i in range(bots_amount):
@@ -143,6 +143,16 @@ class Game:
         player.bet = None
 
     @staticmethod
+    def _get_int(phrase='Input: '):
+        while True:
+            try:
+                num = int(input(f'{phrase}'))
+            except ValueError:
+                print('Invalid input')
+            else:
+                return num if num >= 0 else print('Invalid input')
+
+    @staticmethod
     def _user_choice(phrase='Input: '):
         while True:
             user_input = input(f'{phrase}').lower()
@@ -151,7 +161,28 @@ class Game:
             else:
                 print('Invalid input')
 
-    def start_game(self, bots_amount):
+    def start_game(self):
+        print('Welcome to cbs blackjack!'.center(90, '-'))
+
+        user_name = input('Your name: ')
+        if len(user_name) == 0:
+            user_name = 'User'
+
+        bank = self._get_int('Your bank: ')
+        if bank < 5:
+            print("Sorry, but you can't play with less than 5$")
+            exit(0)
+
+        self.player = Player(user_name, bank)
+
+        while True:
+            bots_amount = self._get_int(f'The number of players (max: {MAX_PLAYERS - 1}): ')
+            if bots_amount <= MAX_PLAYERS - 1:
+                break
+            else:
+                print('Invalid input')
+        print('-' * 90)
+
         # Adding players to the game
         self._add_bots(bots_amount, self.player.bank)
         print('-' * 90)
