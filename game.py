@@ -12,7 +12,7 @@ class Game:
     def __init__(self):
         self.deck = Deck()
         self.player = None
-        self.dealer = Dealer(None, None)
+        self.dealer = Dealer()
         self.players = []
         self.min_bet, self.max_bet = 1, None
 
@@ -98,6 +98,7 @@ class Game:
     def get_result(self, players_in_game):
         if self.dealer.points > 21:
             for player in players_in_game:
+                sleep(2)
                 # If player have blackjack
                 if player.points == 21 and len(player.cards) == 2:
                     self.blackjack(player)
@@ -109,6 +110,7 @@ class Game:
         # If dealer have blackjack
         elif self.dealer.points == 21 and len(self.dealer.cards) == 2:
             for player in players_in_game:
+                sleep(2)
                 # And player have blackjack
                 if player.points == 21 and len(player.cards) == 2:
                     self.draw(player)
@@ -120,6 +122,7 @@ class Game:
         # If dealer have <= 21
         else:
             for player in players_in_game:
+                sleep(2)
                 # If player have blackjack
                 if player.points == 21 and len(player.cards) == 2:
                     self.blackjack(player)
@@ -164,17 +167,22 @@ class Game:
     def start_game(self):
         print('Welcome to cbs blackjack!'.center(90, '-'))
 
+        # Getting name from user
         user_name = input('Your name: ')
         if len(user_name) == 0:
             user_name = 'User'
 
+        # Get size of user bank
         bank = self._get_int('Your bank: ')
         if bank < 5:
             print("Sorry, but you can't play with less than 5$")
             exit(0)
 
+        # Create user and update size of max bet
         self.player = Player(user_name, bank)
+        self.max_bet = bank
 
+        # Get bots amount from user
         while True:
             bots_amount = self._get_int(f'The number of players (max: {MAX_PLAYERS - 1}): ')
             if bots_amount <= MAX_PLAYERS - 1:
@@ -187,6 +195,7 @@ class Game:
         self._add_bots(bots_amount, self.player.bank)
         print('-' * 90)
 
+        # Adding user to the game and shuffle the list
         self.players.append(self.player)
         shuffle(self.players)
 
@@ -200,7 +209,6 @@ class Game:
             print('-' * 90)
 
             # getting first 2 cards for each player
-            sleep(2)
             for player in players_in_game:
                 for _ in range(2):
                     self.get_card(player)
@@ -209,13 +217,14 @@ class Game:
             self.get_card(self.dealer)
 
             # printing all cards and points for each player
-            sleep(2)
             print('First hand:'.center(90, ' '))
             for player in players_in_game:
+                sleep(2)
                 self.print_cards_points(player)
             print('-' * 90)
 
             # printing all cards and points for dealer
+            sleep(2)
             self.print_cards_points(self.dealer)
             print('-' * 90)
 
@@ -241,13 +250,14 @@ class Game:
                 print('-' * 90)
 
                 # printing all cards and points for each player
-                sleep(3)
                 print('Second hand:'.center(90, ' '))
                 for player in players_in_game:
+                    sleep(2)
                     self.print_cards_points(player)
                 print('-' * 90)
 
                 # printing all cards and points for dealer
+                sleep(2)
                 self.print_cards_points(self.dealer)
                 print('-' * 90)
 

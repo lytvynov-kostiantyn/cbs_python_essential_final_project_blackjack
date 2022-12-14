@@ -3,9 +3,7 @@ from abc import abstractmethod, ABC
 
 
 class AbstractPlayer(ABC):
-    def __init__(self, name, bank):
-        self.name = name
-        self.bank = bank
+    def __init__(self):
         self.points = 0
         self.cards = []
         self.bet = None
@@ -26,11 +24,6 @@ class AbstractPlayer(ABC):
     @abstractmethod
     def make_bet(self):
         pass
-
-    def end_round(self):
-        self.points = 0
-        self.cards = []
-        self.bet = None
 
     @abstractmethod
     def ask_cards(self):
@@ -57,6 +50,11 @@ class AbstractPlayer(ABC):
 
 
 class Player(AbstractPlayer):
+    def __init__(self, name, bank):
+        super().__init__()
+        self.name = name
+        self.bank = bank
+
     def make_bet(self):
         while True:
             user_bet = self._get_int('Make your bet: ')
@@ -78,7 +76,7 @@ class Player(AbstractPlayer):
         return f'Player "{self.name}"'
 
 
-class Bot(AbstractPlayer):
+class Bot(Player):
     def __init__(self, name, bank):
         super().__init__(name, bank)
         self.bot_level = random.randint(17, 20)
@@ -93,9 +91,6 @@ class Bot(AbstractPlayer):
             return True
         else:
             return False
-
-    def __str__(self):
-        return f'Bot "{self.name}"'
 
 
 class Dealer(AbstractPlayer):
