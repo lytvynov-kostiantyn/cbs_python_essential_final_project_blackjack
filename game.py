@@ -35,12 +35,25 @@ class Game:
     # getting first cards for each player
     def get_card(self, player):
         card = self.deck.get_card()
+        # Change ace value
+        if card.rank == 'A':
+            if isinstance(player, Player):
+                # If user have 10 points this change make no sens
+                if player.points != 10:
+                    print('You can choice Ase points value: 11 or 1.')
+                    player_choice = self._user_choice('Count Ase as 11 points?(y/n): ')
+                    card.points = 11 if player_choice == 'y' else 1
+
+            # If bot or dealer already have 11 points or more, ace value will be 1 point
+            else:
+                if player.points > 10:
+                    card.points = 1
         player.take_card(card)
 
     @staticmethod
     def blackjack(player):
         player.bank += player.bet * 2.5
-        print(f'{player} win and get 2.5xbet to his bank!')
+        print(f'{player} win and get 1.5xbet to his bank!')
 
     @staticmethod
     def player_win(player):
@@ -69,7 +82,7 @@ class Game:
                     if isinstance(player, Bot):
                         player_choice = random.choice(['y', 'n'])
                     else:
-                        print('You can take your prize(1xbet) now or wait dealer second card and win 1.5xbet')
+                        print('You can take your prize 1xbet now or wait dealer second card and win 1.5xbet')
                         player_choice = self._user_choice('Want to continue?(y/n): ')
                     match player_choice:
                         case 'y':
@@ -216,6 +229,9 @@ class Game:
             # getting 1 card for dealer
             self.get_card(self.dealer)
 
+            for cards in self.deck.cards:
+                print(cards)
+
             # printing all cards and points for each player
             print('First hand:'.center(90, ' '))
             for player in players_in_game:
@@ -248,6 +264,9 @@ class Game:
                 # adding cards to dealer
                 self.add_cards(self.dealer)
                 print('-' * 90)
+
+                for cards in self.deck.cards:
+                    print(cards)
 
                 # printing all cards and points for each player
                 print('Second hand:'.center(90, ' '))

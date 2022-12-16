@@ -14,12 +14,6 @@ class AbstractPlayer(ABC):
 
     def _update_points(self):
         self.points = sum([card.points for card in self.cards])
-        if self.points > 21:
-            if 'A' in [card.rank for card in self.cards]:
-                for card in self.cards:
-                    if card.rank == 'A':
-                        card.points = 1
-                self.points = sum([card.points for card in self.cards])
 
     @abstractmethod
     def make_bet(self):
@@ -76,9 +70,11 @@ class Player(AbstractPlayer):
         return f'Player "{self.name}"'
 
 
-class Bot(Player):
+class Bot(AbstractPlayer):
     def __init__(self, name, bank):
-        super().__init__(name, bank)
+        super().__init__()
+        self.name = name
+        self.bank = bank
         self.bot_level = random.randint(17, 20)
 
     def make_bet(self):
@@ -91,6 +87,9 @@ class Bot(Player):
             return True
         else:
             return False
+
+    def __str__(self):
+        return f'Player "{self.name}"'
 
 
 class Dealer(AbstractPlayer):
