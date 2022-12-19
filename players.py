@@ -89,7 +89,7 @@ class Bot(AbstractPlayer):
             return False
 
     def __str__(self):
-        return f'Player "{self.name}"'
+        return f'Bot "{self.name}"'
 
 
 class Dealer(AbstractPlayer):
